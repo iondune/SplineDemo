@@ -2,6 +2,7 @@
 #pragma once
 
 #include <ionEngine.h>
+#include "CSubdivisionSurface.h"
 
 
 class CApplication : public ion::Singleton<CApplication>, public ion::CDefaultApplication
@@ -33,6 +34,8 @@ public:
 	ion::SharedPointer<ion::Graphics::ITexture> GroundTexture;
 
 	ion::Scene::CSimpleMeshSceneObject * GroundObject = nullptr;
+
+	CSubdivisionSurface SubdivisionSurface;
 
 protected:
 

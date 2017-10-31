@@ -31,13 +31,39 @@ void CApplication::OnEvent(IEvent & Event)
 			case EKey::F:
 				RenderPass->SetActiveCamera(FreeCamera);
 				break;
-			case EKey::G:
+
+			case EKey::Z:
+
+				SubdivisionSurface.MeshObject->SetFeatureEnabled(Graphics::EDrawFeature::Wireframe, true);
 				break;
-			case EKey::LeftBracket:
+
+			case EKey::X:
+
+				SubdivisionSurface.MeshObject->SetFeatureEnabled(Graphics::EDrawFeature::Wireframe, false);
 				break;
-			case EKey::RightBracket:
+
+			case EKey::N:
+
+				SubdivisionSurface.NormalMode = 0;
+				SubdivisionSurface.ResetMesh();
 				break;
-			case EKey::P:
+
+			case EKey::M:
+
+				SubdivisionSurface.NormalMode = 1;
+				SubdivisionSurface.ResetMesh();
+				break;
+
+			case EKey::J:
+
+				SubdivisionSurface.SubDivLevel = Min(++SubdivisionSurface.SubDivLevel, SubdivisionSurface.MaxSubDivide - 1);
+				SubdivisionSurface.ResetMesh();
+				break;
+
+			case EKey::K:
+
+				SubdivisionSurface.SubDivLevel = Max(--SubdivisionSurface.SubDivLevel, 0);
+				SubdivisionSurface.ResetMesh();
 				break;
 			}
 		}
@@ -61,7 +87,6 @@ void CApplication::OnEvent(IEvent & Event)
 		}
 	}
 }
-
 
 void CApplication::InitializeEngine()
 {
@@ -125,6 +150,8 @@ void CApplication::SetupScene()
 	TimeManager->MakeUpdateTick(0.02)->AddListener(Controller);
 
 	RenderPass->SetActiveCamera(FreeCamera);
+
+	SubdivisionSurface.MakeCube();
 }
 
 void CApplication::AddSceneObjects()
