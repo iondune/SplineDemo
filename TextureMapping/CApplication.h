@@ -27,6 +27,7 @@ public:
 	ion::SharedPointer<ion::Graphics::IShader> GroundShader;
 	ion::SharedPointer<ion::Graphics::IShader> DiffuseShader;
 	ion::SharedPointer<ion::Graphics::IShader> ColorShader;
+	ion::SharedPointer<ion::Graphics::IShader> SpecularShader;
 
 	ion::Scene::CSimpleMesh * CubeMesh = nullptr;
 	ion::Scene::CSimpleMesh * SphereMesh = nullptr;

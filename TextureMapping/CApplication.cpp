@@ -123,6 +123,7 @@ void CApplication::LoadAssets()
 	GroundShader = AssetManager->LoadShader("Ground");
 	DiffuseShader = AssetManager->LoadShader("Diffuse");
 	ColorShader = AssetManager->LoadShader("Color");
+	SpecularShader = AssetManager->LoadShader("Specular");
 
 	GroundTexture = AssetManager->LoadTexture("Ground.png");
 	if (GroundTexture)
@@ -163,6 +164,13 @@ void CApplication::AddSceneObjects()
 	GroundObject->SetPosition(vec3f(0, 0, 0));
 	GroundObject->SetTexture("uTexture", GroundTexture);
 	RenderPass->AddSceneObject(GroundObject);
+
+	CSimpleMeshSceneObject * SphereObject = new CSimpleMeshSceneObject();
+	SphereObject->SetMesh(SphereMesh);
+	SphereObject->SetShader(SpecularShader);
+	SphereObject->SetPosition(vec3f(-3, 3, 0));
+	SphereObject->SetTexture("uTexture", GroundTexture);
+	RenderPass->AddSceneObject(SphereObject);
 	
 	CDirectionalLight * Light = new CDirectionalLight();
 	Light->SetDirection(vec3f(1, -2, -2));

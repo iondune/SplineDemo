@@ -17,13 +17,16 @@ struct SLight
 	float Radius;
 };
 
+in vec3 fObjectPosition;
+in vec3 fWorldPosition;
 in vec3 fNormal;
-in vec3 fLightVector[LIGHT_MAX];
-in vec3 fEye;
+
+uniform sampler2D uTexture;
 
 uniform int uPointLightsCount;
 uniform SLight uPointLights[LIGHT_MAX];
 uniform SMaterial uMaterial;
+uniform vec3 uCameraPosition;
 
 out vec4 outColor;
 
@@ -35,26 +38,31 @@ float sq(float v)
 
 void main()
 {
-	vec3 nEye = normalize(fEye);
+	vec3 nEye = normalize(uCameraPosition - fWorldPosition);
+	vec3 nNormal = normalize(fNormal);
 
 	vec3 Diffuse = vec3(0);
 	vec3 Specular = vec3(0);
-
+	vec3 Ambient = uMaterial.AmbientColor;
 
 	for (int i = 0; i < LIGHT_MAX && i < uPointLightsCount; ++ i)
 	{
-		vec3 nLight = normalize(fLightVector[i]);
-		vec3 nNormal = normalize(fNormal);
-		vec3 Reflection = reflect(-nLight, nNormal);
+		vec3 Light = uPointLights[i].Position - fWorldPosition;
+		vec3 nLight = normalize(Light);
+		vec3 Half = normalize(nLight + nEye);
+
+		float Distance = length(Light);
+		float Attenuation = 1.0 / sq(Distance / uPointLights[i].Radius + 1.0);
 
 		float Shading = clamp(dot(nNormal, nLight), 0.0, 1.0);
-		float Distance = length(fLightVector[i]);
-		float Attenuation = 1.0 / sq(Distance / uPointLights[i].Radius + 1);
 		Diffuse += uMaterial.DiffuseColor * Shading * Attenuation * uPointLights[i].Color;
 
-		float Highlight = pow(clamp(dot(nEye, Reflection), 0.0, 1.0), uMaterial.Shininess);
+		float Highlight = pow(clamp(dot(Half, nNormal), 0.0, 1.0), uMaterial.Shininess);
 		Specular += uMaterial.SpecularColor * Highlight * Attenuation * uPointLights[i].Color;
 	}
 
-	outColor = vec4(Specular + Diffuse + uMaterial.AmbientColor, 1);
+	vec2 TexCoord = fObjectPosition.xz / 2.0 + vec2(0.5);
+
+	outColor.a = 1.0;
+	outColor.rgb = (Specular + Diffuse + Ambient) * texture(uTexture, TexCoord).rgb;
 }
