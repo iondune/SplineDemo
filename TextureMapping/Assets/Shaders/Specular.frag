@@ -28,7 +28,8 @@ uniform int uPointLightsCount;
 uniform SLight uPointLights[LIGHT_MAX];
 uniform SMaterial uMaterial;
 uniform vec3 uCameraPosition;
-uniform int uMode;
+uniform int uTexCoordMode;
+uniform int uShowTexCoords;
 
 out vec4 outColor;
 
@@ -66,22 +67,23 @@ void main()
 	vec3 Color = (Specular + Diffuse + Ambient);
 	vec2 TexCoord = vec2(0.0);
 
-	switch (uMode)
+	switch (uTexCoordMode)
 	{
-	case 0: // Show tex coords
-		Color = vec3(fTexCoords, 0.0);
-		break;
-
-	case 1: // Mesh tex coords
+	default:
+	case 0: // Mesh tex coords
 		TexCoord = vec2(1.0 - fTexCoords.x, fTexCoords.y);
 		break;
 
-	case 2: // Project XZ
+	case 1: // Project XZ
 		TexCoord = fObjectPosition.xz + vec2(0.5);
 		break;
 	}
 
-	if (uMode > 0)
+	if (uShowTexCoords != 0)
+	{
+		Color = vec3(TexCoord, 0.0);
+	}
+	else
 	{
 		Color *= texture(uTexture, TexCoord).rgb;
 	}

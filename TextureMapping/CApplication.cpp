@@ -33,15 +33,19 @@ void CApplication::OnEvent(IEvent & Event)
 				break;
 
 			case EKey::T:
-				uMode = 0;
+				uTexCoordMode = 0;
 				break;
 
 			case EKey::Y:
-				uMode = 1;
+				uTexCoordMode = 1;
 				break;
 
 			case EKey::U:
-				uMode = 2;
+				uTexCoordMode = 2;
+				break;
+
+			case EKey::Q:
+				uShowTexCoords = (uShowTexCoords == 0 ? 1 : 0);
 				break;
 
 			case EKey::Z:
@@ -191,7 +195,8 @@ void CApplication::AddSceneObjects()
 	SphereObject->SetShader(SpecularShader);
 	SphereObject->SetPosition(vec3f(0, 3, 0));
 	SphereObject->SetTexture("uTexture", TestTexture);
-	SphereObject->SetUniform("uMode", uMode);
+	SphereObject->SetUniform("uTexCoordMode", uTexCoordMode);
+	SphereObject->SetUniform("uShowTexCoords", uShowTexCoords);
 	SphereObject->GetMaterial().Specular = 0;
 	RenderPass->AddSceneObject(SphereObject);
 	

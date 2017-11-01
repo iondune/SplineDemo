@@ -39,7 +39,8 @@ public:
 	ion::Scene::CSimpleMeshSceneObject * SphereObject = nullptr;
 
 	CSubdivisionSurface SubdivisionSurface;
-	ion::Graphics::CUniform<int> uMode = 0;
+	ion::Graphics::CUniform<int> uTexCoordMode = 0;
+	ion::Graphics::CUniform<int> uShowTexCoords = 0;
 
 protected:
 
