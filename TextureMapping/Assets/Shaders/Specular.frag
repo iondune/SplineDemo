@@ -39,6 +39,28 @@ float sq(float v)
 	return v * v;
 }
 
+const float Pi = 3.14159;
+
+
+
+vec2 CubeMap(vec3 p)
+{
+	if (abs(p.x) > abs(p.y) && abs(p.x) > abs(p.z))
+	{
+		return vec2(abs(p.y * 1.414 + 0.5), abs(p.z * 1.414 + 0.5));
+	}
+	else if (abs(p.y) > abs(p.z))
+	{
+		return vec2(abs(p.x * 1.414 + 0.5), abs(p.z * 1.414 + 0.5));
+	}
+	else
+	{
+		return vec2(abs(p.x * 1.414 + 0.5), abs(p.y * 1.414 + 0.5));
+	}
+}
+
+
+
 void main()
 {
 	vec3 nEye = normalize(uCameraPosition - fWorldPosition);
@@ -74,8 +96,16 @@ void main()
 		TexCoord = vec2(1.0 - fTexCoords.x, fTexCoords.y);
 		break;
 
-	case 1: // Project XZ
-		TexCoord = fObjectPosition.xz + vec2(0.5);
+	case 1: // Project XY
+		TexCoord = fObjectPosition.xy + vec2(0.5);
+		break;
+
+	case 2: // Spherical
+		TexCoord = vec2(asin(nNormal.x) / Pi + 0.5, asin(nNormal.y) / Pi + 0.5);
+		break;
+
+	case 3: // Cube map
+		TexCoord = CubeMap(fObjectPosition);
 		break;
 	}
 

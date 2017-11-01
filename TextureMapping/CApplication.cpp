@@ -44,6 +44,18 @@ void CApplication::OnEvent(IEvent & Event)
 				uTexCoordMode = 2;
 				break;
 
+			case EKey::I:
+				uTexCoordMode = 3;
+				break;
+
+			case EKey::O:
+				uTexCoordMode = 4;
+				break;
+					
+			case EKey::P:
+				uTexCoordMode = 5;
+				break;
+
 			case EKey::Q:
 				uShowTexCoords = (uShowTexCoords == 0 ? 1 : 0);
 				break;
@@ -165,7 +177,7 @@ void CApplication::SetupScene()
 	SceneManager->AddRenderPass(RenderPass);
 
 	FreeCamera = new CPerspectiveCamera(Window->GetAspectRatio());
-	FreeCamera->SetPosition(vec3f(0, 1.25f, 3));
+	FreeCamera->SetPosition(vec3f(0, 3, 3));
 	FreeCamera->SetFocalLength(0.4f);
 	FreeCamera->SetFarPlane(10000.f);
 
