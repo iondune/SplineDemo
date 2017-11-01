@@ -32,36 +32,42 @@ void CApplication::OnEvent(IEvent & Event)
 				RenderPass->SetActiveCamera(FreeCamera);
 				break;
 
-			case EKey::Z:
+			case EKey::T:
+				uMode = 0;
+				break;
 
+			case EKey::Y:
+				uMode = 1;
+				break;
+
+			case EKey::U:
+				uMode = 2;
+				break;
+
+			case EKey::Z:
 				SubdivisionSurface.MeshObject->SetFeatureEnabled(Graphics::EDrawFeature::Wireframe, true);
 				break;
 
 			case EKey::X:
-
 				SubdivisionSurface.MeshObject->SetFeatureEnabled(Graphics::EDrawFeature::Wireframe, false);
 				break;
 
 			case EKey::N:
-
 				SubdivisionSurface.NormalMode = 0;
 				SubdivisionSurface.ResetMesh();
 				break;
 
 			case EKey::M:
-
 				SubdivisionSurface.NormalMode = 1;
 				SubdivisionSurface.ResetMesh();
 				break;
 
 			case EKey::J:
-
 				SubdivisionSurface.SubDivLevel = Min(++SubdivisionSurface.SubDivLevel, SubdivisionSurface.MaxSubDivide - 1);
 				SubdivisionSurface.ResetMesh();
 				break;
 
 			case EKey::K:
-
 				SubdivisionSurface.SubDivLevel = Max(--SubdivisionSurface.SubDivLevel, 0);
 				SubdivisionSurface.ResetMesh();
 				break;
@@ -170,6 +176,7 @@ void CApplication::AddSceneObjects()
 	SphereObject->SetShader(SpecularShader);
 	SphereObject->SetPosition(vec3f(-3, 3, 0));
 	SphereObject->SetTexture("uTexture", GroundTexture);
+	SphereObject->SetUniform("uMode", uMode);
 	RenderPass->AddSceneObject(SphereObject);
 	
 	CDirectionalLight * Light = new CDirectionalLight();

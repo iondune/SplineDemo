@@ -37,6 +37,7 @@ public:
 	ion::Scene::CSimpleMeshSceneObject * GroundObject = nullptr;
 
 	CSubdivisionSurface SubdivisionSurface;
+	ion::Graphics::CUniform<int> uMode = 0;
 
 protected:
 

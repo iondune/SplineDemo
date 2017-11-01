@@ -20,6 +20,7 @@ struct SLight
 in vec3 fObjectPosition;
 in vec3 fWorldPosition;
 in vec3 fNormal;
+in vec2 fTexCoords;
 
 uniform sampler2D uTexture;
 
@@ -27,6 +28,7 @@ uniform int uPointLightsCount;
 uniform SLight uPointLights[LIGHT_MAX];
 uniform SMaterial uMaterial;
 uniform vec3 uCameraPosition;
+uniform int uMode;
 
 out vec4 outColor;
 
@@ -61,8 +63,29 @@ void main()
 		Specular += uMaterial.SpecularColor * Highlight * Attenuation * uPointLights[i].Color;
 	}
 
-	vec2 TexCoord = fObjectPosition.xz / 2.0 + vec2(0.5);
+	vec3 Color = (Specular + Diffuse + Ambient);
+	vec2 TexCoord = vec2(0.0);
+
+	switch (uMode)
+	{
+	case 0: // Show tex coords
+		Color = vec3(fTexCoords, 0.0);
+		break;
+
+	case 1: // Mesh tex coords
+		TexCoord = fTexCoords;
+		break;
+
+	case 2: // Project XZ
+		TexCoord = fObjectPosition.xz / 2.0 + vec2(0.5);
+		break;
+	}
+
+	if (uMode > 0)
+	{
+		Color *= texture(uTexture, TexCoord).rgb;
+	}
 
 	outColor.a = 1.0;
-	outColor.rgb = (Specular + Diffuse + Ambient) * texture(uTexture, TexCoord).rgb;
+	outColor.rgb = Color;
 }
