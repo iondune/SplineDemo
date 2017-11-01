@@ -73,11 +73,11 @@ void main()
 		break;
 
 	case 1: // Mesh tex coords
-		TexCoord = fTexCoords;
+		TexCoord = vec2(1.0 - fTexCoords.x, fTexCoords.y);
 		break;
 
 	case 2: // Project XZ
-		TexCoord = fObjectPosition.xz / 2.0 + vec2(0.5);
+		TexCoord = fObjectPosition.xz + vec2(0.5);
 		break;
 	}
 

@@ -386,7 +386,7 @@ void CSubdivisionSurface::ResetMesh()
 	{
 		MeshObject = new Scene::CSimpleMeshSceneObject();
 		MeshObject->SetShader(Application->DiffuseShader);
-		MeshObject->SetPosition(vec3f(0, 3, 0));
+		MeshObject->SetPosition(vec3f(3, 3, 0));
 		MeshObject->SetUniform("uColor", Graphics::CUniform<color3f>(Color::Hex(0x367DE0)));
 		Application->RenderPass->AddSceneObject(MeshObject);
 	}

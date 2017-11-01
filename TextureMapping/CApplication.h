@@ -33,8 +33,10 @@ public:
 	ion::Scene::CSimpleMesh * SphereMesh = nullptr;
 	
 	ion::SharedPointer<ion::Graphics::ITexture> GroundTexture;
+	ion::SharedPointer<ion::Graphics::ITexture> TestTexture;
 
 	ion::Scene::CSimpleMeshSceneObject * GroundObject = nullptr;
+	ion::Scene::CSimpleMeshSceneObject * SphereObject = nullptr;
 
 	CSubdivisionSurface SubdivisionSurface;
 	ion::Graphics::CUniform<int> uMode = 0;

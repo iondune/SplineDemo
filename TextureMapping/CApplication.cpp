@@ -71,6 +71,14 @@ void CApplication::OnEvent(IEvent & Event)
 				SubdivisionSurface.SubDivLevel = Max(--SubdivisionSurface.SubDivLevel, 0);
 				SubdivisionSurface.ResetMesh();
 				break;
+
+			case EKey::LeftBracket:
+				SubdivisionSurface.MeshObject->SetVisible(! SubdivisionSurface.MeshObject->IsVisible());
+				break;
+
+			case EKey::RightBracket:
+				GroundObject->SetVisible(! GroundObject->IsVisible());
+				break;
 			}
 		}
 	}
@@ -137,6 +145,13 @@ void CApplication::LoadAssets()
 		GroundTexture->SetMagFilter(ITexture::EFilter::Nearest);
 		GroundTexture->SetWrapMode(ITexture::EWrapMode::Clamp);
 	}
+
+	TestTexture = AssetManager->LoadTexture("Test.jpg");
+	if (TestTexture)
+	{
+		TestTexture->SetMagFilter(ITexture::EFilter::Nearest);
+		TestTexture->SetWrapMode(ITexture::EWrapMode::Clamp);
+	}
 }
 
 void CApplication::SetupScene()
@@ -171,12 +186,13 @@ void CApplication::AddSceneObjects()
 	GroundObject->SetTexture("uTexture", GroundTexture);
 	RenderPass->AddSceneObject(GroundObject);
 
-	CSimpleMeshSceneObject * SphereObject = new CSimpleMeshSceneObject();
+	SphereObject = new CSimpleMeshSceneObject();
 	SphereObject->SetMesh(SphereMesh);
 	SphereObject->SetShader(SpecularShader);
-	SphereObject->SetPosition(vec3f(-3, 3, 0));
-	SphereObject->SetTexture("uTexture", GroundTexture);
+	SphereObject->SetPosition(vec3f(0, 3, 0));
+	SphereObject->SetTexture("uTexture", TestTexture);
 	SphereObject->SetUniform("uMode", uMode);
+	SphereObject->GetMaterial().Specular = 0;
 	RenderPass->AddSceneObject(SphereObject);
 	
 	CDirectionalLight * Light = new CDirectionalLight();
