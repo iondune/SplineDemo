@@ -23,10 +23,8 @@ public:
 	ion::SharedPointer<ion::Graphics::IGraphicsContext> GraphicsContext;
 	ion::Scene::CRenderPass * RenderPass = nullptr;
 
-	ion::SharedPointer<ion::Graphics::IShader> GroundShader;
-	ion::SharedPointer<ion::Graphics::IShader> DiffuseShader;
 	ion::SharedPointer<ion::Graphics::IShader> ColorShader;
-	ion::SharedPointer<ion::Graphics::IShader> SpecularShader;
+	ion::SharedPointer<ion::Graphics::IShader> TextureShader;
 
 	ion::Scene::CSimpleMesh * CubeMesh = nullptr;
 	ion::Scene::CSimpleMesh * SphereMesh = nullptr;

@@ -98,10 +98,8 @@ void CApplication::LoadAssets()
 	CubeMesh = CGeometryCreator::CreateCube();
 	SphereMesh = CGeometryCreator::CreateSphere(0.5f, 12, 8);
 
-	GroundShader = AssetManager->LoadShader("Ground");
-	DiffuseShader = AssetManager->LoadShader("Diffuse");
 	ColorShader = AssetManager->LoadShader("Color");
-	SpecularShader = AssetManager->LoadShader("Specular");
+	TextureShader = AssetManager->LoadShader("Texture");
 
 	GroundTexture = AssetManager->LoadTexture("Ground.png");
 	if (GroundTexture)
@@ -135,7 +133,7 @@ void CApplication::AddSceneObjects()
 {
 	GroundObject = new CSimpleMeshSceneObject();
 	GroundObject->SetMesh(CubeMesh);
-	GroundObject->SetShader(SpecularShader);
+	GroundObject->SetShader(TextureShader);
 	GroundObject->SetScale(vec3f(16, 1, 16));
 	GroundObject->SetPosition(vec3f(0, 0, 0));
 	GroundObject->SetTexture("uTexture", GroundTexture);
@@ -143,11 +141,9 @@ void CApplication::AddSceneObjects()
 
 	SphereObject = new CSimpleMeshSceneObject();
 	SphereObject->SetMesh(SphereMesh);
-	SphereObject->SetShader(SpecularShader);
+	SphereObject->SetShader(ColorShader);
 	SphereObject->SetPosition(vec3f(0, 3, 0));
-	SphereObject->SetTexture("uTexture", GroundTexture);
-	SphereObject->SetUniform("uTexCoordMode", uTexCoordMode);
-	SphereObject->SetUniform("uShowTexCoords", uShowTexCoords);
+	SphereObject->SetUniform("uColor", CUniform<color3f>(Color::Basic::Red));
 	SphereObject->GetMaterial().Specular = 0;
 	RenderPass->AddSceneObject(SphereObject);
 	
