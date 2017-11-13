@@ -2,7 +2,6 @@
 #pragma once
 
 #include <ionEngine.h>
-#include "CSubdivisionSurface.h"
 
 
 class CApplication : public ion::Singleton<CApplication>, public ion::CDefaultApplication
@@ -33,12 +32,10 @@ public:
 	ion::Scene::CSimpleMesh * SphereMesh = nullptr;
 	
 	ion::SharedPointer<ion::Graphics::ITexture> GroundTexture;
-	ion::SharedPointer<ion::Graphics::ITexture> TestTexture;
 
 	ion::Scene::CSimpleMeshSceneObject * GroundObject = nullptr;
 	ion::Scene::CSimpleMeshSceneObject * SphereObject = nullptr;
 
-	CSubdivisionSurface SubdivisionSurface;
 	ion::Graphics::CUniform<int> uTexCoordMode = 0;
 	ion::Graphics::CUniform<int> uShowTexCoords = 0;
 

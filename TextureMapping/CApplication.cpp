@@ -33,63 +33,11 @@ void CApplication::OnEvent(IEvent & Event)
 				break;
 
 			case EKey::T:
-				uTexCoordMode = 0;
+				GroundTexture->SetMagFilter(ITexture::EFilter::Nearest);
 				break;
 
 			case EKey::Y:
-				uTexCoordMode = 1;
-				break;
-
-			case EKey::U:
-				uTexCoordMode = 2;
-				break;
-
-			case EKey::I:
-				uTexCoordMode = 3;
-				break;
-
-			case EKey::O:
-				uTexCoordMode = 4;
-				break;
-					
-			case EKey::P:
-				uTexCoordMode = 5;
-				break;
-
-			case EKey::Q:
-				uShowTexCoords = (uShowTexCoords == 0 ? 1 : 0);
-				break;
-
-			case EKey::Z:
-				SubdivisionSurface.MeshObject->SetFeatureEnabled(Graphics::EDrawFeature::Wireframe, true);
-				break;
-
-			case EKey::X:
-				SubdivisionSurface.MeshObject->SetFeatureEnabled(Graphics::EDrawFeature::Wireframe, false);
-				break;
-
-			case EKey::N:
-				SubdivisionSurface.NormalMode = 0;
-				SubdivisionSurface.ResetMesh();
-				break;
-
-			case EKey::M:
-				SubdivisionSurface.NormalMode = 1;
-				SubdivisionSurface.ResetMesh();
-				break;
-
-			case EKey::J:
-				SubdivisionSurface.SubDivLevel = Min(++SubdivisionSurface.SubDivLevel, SubdivisionSurface.MaxSubDivide - 1);
-				SubdivisionSurface.ResetMesh();
-				break;
-
-			case EKey::K:
-				SubdivisionSurface.SubDivLevel = Max(--SubdivisionSurface.SubDivLevel, 0);
-				SubdivisionSurface.ResetMesh();
-				break;
-
-			case EKey::LeftBracket:
-				SubdivisionSurface.MeshObject->SetVisible(! SubdivisionSurface.MeshObject->IsVisible());
+				GroundTexture->SetMagFilter(ITexture::EFilter::Linear);
 				break;
 
 			case EKey::RightBracket:
@@ -161,13 +109,6 @@ void CApplication::LoadAssets()
 		GroundTexture->SetMagFilter(ITexture::EFilter::Nearest);
 		GroundTexture->SetWrapMode(ITexture::EWrapMode::Clamp);
 	}
-
-	TestTexture = AssetManager->LoadTexture("Test.jpg");
-	if (TestTexture)
-	{
-		TestTexture->SetMagFilter(ITexture::EFilter::Nearest);
-		TestTexture->SetWrapMode(ITexture::EWrapMode::Clamp);
-	}
 }
 
 void CApplication::SetupScene()
@@ -188,15 +129,13 @@ void CApplication::SetupScene()
 	TimeManager->MakeUpdateTick(0.02)->AddListener(Controller);
 
 	RenderPass->SetActiveCamera(FreeCamera);
-
-	SubdivisionSurface.MakeCube();
 }
 
 void CApplication::AddSceneObjects()
 {
 	GroundObject = new CSimpleMeshSceneObject();
 	GroundObject->SetMesh(CubeMesh);
-	GroundObject->SetShader(GroundShader);
+	GroundObject->SetShader(SpecularShader);
 	GroundObject->SetScale(vec3f(16, 1, 16));
 	GroundObject->SetPosition(vec3f(0, 0, 0));
 	GroundObject->SetTexture("uTexture", GroundTexture);
@@ -206,7 +145,7 @@ void CApplication::AddSceneObjects()
 	SphereObject->SetMesh(SphereMesh);
 	SphereObject->SetShader(SpecularShader);
 	SphereObject->SetPosition(vec3f(0, 3, 0));
-	SphereObject->SetTexture("uTexture", TestTexture);
+	SphereObject->SetTexture("uTexture", GroundTexture);
 	SphereObject->SetUniform("uTexCoordMode", uTexCoordMode);
 	SphereObject->SetUniform("uShowTexCoords", uShowTexCoords);
 	SphereObject->GetMaterial().Specular = 0;
@@ -217,6 +156,7 @@ void CApplication::AddSceneObjects()
 	RenderPass->AddLight(Light);
 
 	PointLight = new CPointLight();
+	PointLight->SetPosition(vec3f(3, 6, 3));
 	RenderPass->AddLight(PointLight);
 }
 
@@ -229,8 +169,6 @@ void CApplication::MainLoop()
 		
 		// GUI
 		GUIManager->NewFrame();
-
-		PointLight->SetPosition(FreeCamera->GetPosition());
 
 		// Draw
 		RenderTarget->ClearColorAndDepth();

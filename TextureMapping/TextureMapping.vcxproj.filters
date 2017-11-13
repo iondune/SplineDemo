@@ -3,10 +3,8 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="CApplication.cpp" />
-    <ClCompile Include="CSubdivisionSurface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CApplication.h" />
-    <ClInclude Include="CSubdivisionSurface.h" />
   </ItemGroup>
 </Project>
