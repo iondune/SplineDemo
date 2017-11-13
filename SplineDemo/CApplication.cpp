@@ -34,14 +34,17 @@ void CApplication::OnEvent(IEvent & Event)
 
 			case EKey::T:
 				Interpolator->Mode = ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>::Uniform;
+				Spline.BuildDistanceTable();
 				break;
 
 			case EKey::Y:
 				Interpolator->Mode = ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>::Chordal;
+				Spline.BuildDistanceTable();
 				break;
 
 			case EKey::U:
 				Interpolator->Mode = ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>::Centripetal;
+				Spline.BuildDistanceTable();
 				break;
 
 			case EKey::RightBracket:
