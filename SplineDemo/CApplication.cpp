@@ -160,41 +160,14 @@ void CApplication::AddSceneObjects()
 	PointLight->SetPosition(vec3f(3, 6, 3));
 	RenderPass->AddLight(PointLight);
 
-	CSimpleMeshSceneObject * NodeObject = new CSimpleMeshSceneObject();
-	NodeObject->SetMesh(CubeMesh);
-	NodeObject->SetShader(ColorShader);
-	NodeObject->SetPosition(vec3f(0, 1, 0));
-	NodeObject->SetScale(0.15f);
-	NodeObject->SetUniform("uColor", CUniform<color3f>(Color::Basic::Magenta));
-	RenderPass->AddSceneObject(NodeObject);
+	Interpolator = std::make_shared<ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>>();
+	Spline.SetDefaultInterpolator(Interpolator);
+	Spline.SetLooping(false);
 
-	NodeObject = new CSimpleMeshSceneObject();
-	NodeObject->SetMesh(CubeMesh);
-	NodeObject->SetShader(ColorShader);
-	NodeObject->SetPosition(vec3f(3, 1, 0));
-	NodeObject->SetScale(0.15f);
-	NodeObject->SetUniform("uColor", CUniform<color3f>(Color::Basic::Magenta));
-	RenderPass->AddSceneObject(NodeObject);
-
-	NodeObject = new CSimpleMeshSceneObject();
-	NodeObject->SetMesh(CubeMesh);
-	NodeObject->SetShader(ColorShader);
-	NodeObject->SetPosition(vec3f(3, 1, 3));
-	NodeObject->SetScale(0.15f);
-	NodeObject->SetUniform("uColor", CUniform<color3f>(Color::Basic::Magenta));
-	RenderPass->AddSceneObject(NodeObject);
-
-	NodeObject = new CSimpleMeshSceneObject();
-	NodeObject->SetMesh(CubeMesh);
-	NodeObject->SetShader(ColorShader);
-	NodeObject->SetPosition(vec3f(6, 1, 9));
-	NodeObject->SetScale(0.15f);
-	NodeObject->SetUniform("uColor", CUniform<color3f>(Color::Basic::Magenta));
-	RenderPass->AddSceneObject(NodeObject);
-
-	LineObject->AddLine(vec3f(0, 1, 0), vec3f(3, 1, 0), Color::Hex(0xCC11FF));
-	LineObject->AddLine(vec3f(3, 1, 0), vec3f(3, 1, 3), Color::Hex(0xCC11FF));
-	LineObject->AddLine(vec3f(3, 1, 3), vec3f(6, 1, 9), Color::Hex(0xCC11FF));
+	Spline.AddNode(vec3f(0, 1, 0));
+	Spline.AddNode(vec3f(3, 1, 0));
+	Spline.AddNode(vec3f(3, 1, 3));
+	Spline.AddNode(vec3f(6, 1, 9));
 }
 
 void CApplication::MainLoop()
@@ -203,9 +176,52 @@ void CApplication::MainLoop()
 	while (WindowManager->Run())
 	{
 		TimeManager->Update();
+
+		Timer += TimeDirection * (float) TimeManager->GetElapsedTime();
 		
+		float const EndPath = (float) (Spline.GetNodes().size() - 1);
+		if (Timer > EndPath)
+		{
+			Timer = EndPath;
+			TimeDirection = -1.f;
+		}
+		else if (Timer < 0.f)
+		{
+			Timer = 0.f;
+			TimeDirection = 1.f;
+		}
+
 		// GUI
 		GUIManager->NewFrame();
+
+		LineObject->ResetLines();
+		if (NodeObjects.size() < Spline.GetNodes().size())
+		{
+			NodeObjects.resize(Spline.GetNodes().size(), nullptr);
+		}
+		for (int i = 0; i < Spline.GetNodes().size(); ++ i)
+		{
+			auto & Node = Spline.GetNode(i);
+
+			if (! NodeObjects[i])
+			{
+				NodeObjects[i] = new CSimpleMeshSceneObject();
+				NodeObjects[i]->SetMesh(CubeMesh);
+				NodeObjects[i]->SetShader(ColorShader);
+				NodeObjects[i]->SetScale(0.15f);
+				NodeObjects[i]->SetUniform("uColor", CUniform<color3f>(Color::Basic::Magenta));
+				RenderPass->AddSceneObject(NodeObjects[i]);
+			}
+
+			NodeObjects[i]->SetPosition(Node);
+
+			if (i + 1 < Spline.GetNodes().size())
+			{
+				LineObject->AddLine(Node, Spline.GetNode(i + 1), Color::Hex(0xCC11FF));
+			}
+		}
+		SphereObject->SetPosition(Spline.GetNodeInterpolated(Timer));
+
 
 		// Draw
 		RenderTarget->ClearColorAndDepth();

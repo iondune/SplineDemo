@@ -37,8 +37,12 @@ public:
 	ion::Scene::CSimpleMeshSceneObject * GroundObject = nullptr;
 	ion::Scene::CSimpleMeshSceneObject * SphereObject = nullptr;
 
-	ion::Graphics::CUniform<int> uTexCoordMode = 0;
-	ion::Graphics::CUniform<int> uShowTexCoords = 0;
+	ion::Animation::CSpline<ion::vec3f> Spline;
+	ion::SharedPointer<ion::Animation::CCatmullRomAdvancedSplineInterpolator<ion::vec3f>> Interpolator;
+	std::vector<ion::Scene::CSimpleMeshSceneObject *> NodeObjects;
+
+	float Timer = 0.f;
+	float TimeDirection = 1.f;
 
 protected:
 
