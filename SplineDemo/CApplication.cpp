@@ -33,11 +33,15 @@ void CApplication::OnEvent(IEvent & Event)
 				break;
 
 			case EKey::T:
-				GroundTexture->SetMagFilter(ITexture::EFilter::Nearest);
+				Interpolator->Mode = ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>::Uniform;
 				break;
 
 			case EKey::Y:
-				GroundTexture->SetMagFilter(ITexture::EFilter::Linear);
+				Interpolator->Mode = ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>::Chordal;
+				break;
+
+			case EKey::U:
+				Interpolator->Mode = ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>::Centripetal;
 				break;
 
 			case EKey::RightBracket:
@@ -219,6 +223,14 @@ void CApplication::MainLoop()
 			{
 				LineObject->AddLine(Node, Spline.GetNode(i + 1), Color::Hex(0xCC11FF));
 			}
+		}
+		float const LengthStep = 0.05f;
+		for (float f = LengthStep; f < Spline.GetTotalPathLength(); f += LengthStep)
+		{
+			LineObject->AddLine(
+				Spline.GetNodeFromDistance(f - LengthStep),
+				Spline.GetNodeFromDistance(f),
+				Color::Hex(0xFF0000));
 		}
 		SphereObject->SetPosition(Spline.GetNodeInterpolated(Timer));
 
