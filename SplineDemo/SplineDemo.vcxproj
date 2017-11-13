@@ -11,21 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{65F8E847-791D-4E6A-AB6A-0AADC06F92C0}</ProjectGuid>
-    <RootNamespace>ClothSimulation</RootNamespace>
+    <ProjectGuid>{E1A65E47-F041-4311-84BB-D713DA704982}</ProjectGuid>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(VisualStudioDir)\Projects\ionEngine\Properties\Application.props" />
   </ImportGroup>
-  <PropertyGroup>
-    <IncludePath>C:\mosektoolswin64x86\mosek\7\tools\platform\win64x86\h;$(VisualStudioDir)\SDKs\eigen;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\mosektoolswin64x86\mosek\7\tools\platform\win64x86\bin;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <ItemDefinitionGroup>
-    <Link>
-      <AdditionalDependencies>mosek64_7_1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CApplication.cpp" />
     <ClCompile Include="Main.cpp" />
