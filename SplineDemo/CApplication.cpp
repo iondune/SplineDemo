@@ -100,6 +100,7 @@ void CApplication::LoadAssets()
 
 	ColorShader = AssetManager->LoadShader("Color");
 	TextureShader = AssetManager->LoadShader("Texture");
+	LineShader = AssetManager->LoadShader("Line");
 
 	GroundTexture = AssetManager->LoadTexture("Ground.png");
 	if (GroundTexture)
@@ -143,9 +144,13 @@ void CApplication::AddSceneObjects()
 	SphereObject->SetMesh(SphereMesh);
 	SphereObject->SetShader(ColorShader);
 	SphereObject->SetPosition(vec3f(0, 3, 0));
+	SphereObject->SetScale(0.35f);
 	SphereObject->SetUniform("uColor", CUniform<color3f>(Color::Basic::Red));
-	SphereObject->GetMaterial().Specular = 0;
 	RenderPass->AddSceneObject(SphereObject);
+
+	LineObject = new CLineSceneObject();
+	LineObject->SetShader(LineShader);
+	RenderPass->AddSceneObject(LineObject);
 	
 	CDirectionalLight * Light = new CDirectionalLight();
 	Light->SetDirection(vec3f(1, -2, -2));
@@ -154,6 +159,42 @@ void CApplication::AddSceneObjects()
 	PointLight = new CPointLight();
 	PointLight->SetPosition(vec3f(3, 6, 3));
 	RenderPass->AddLight(PointLight);
+
+	CSimpleMeshSceneObject * NodeObject = new CSimpleMeshSceneObject();
+	NodeObject->SetMesh(CubeMesh);
+	NodeObject->SetShader(ColorShader);
+	NodeObject->SetPosition(vec3f(0, 1, 0));
+	NodeObject->SetScale(0.15f);
+	NodeObject->SetUniform("uColor", CUniform<color3f>(Color::Basic::Magenta));
+	RenderPass->AddSceneObject(NodeObject);
+
+	NodeObject = new CSimpleMeshSceneObject();
+	NodeObject->SetMesh(CubeMesh);
+	NodeObject->SetShader(ColorShader);
+	NodeObject->SetPosition(vec3f(3, 1, 0));
+	NodeObject->SetScale(0.15f);
+	NodeObject->SetUniform("uColor", CUniform<color3f>(Color::Basic::Magenta));
+	RenderPass->AddSceneObject(NodeObject);
+
+	NodeObject = new CSimpleMeshSceneObject();
+	NodeObject->SetMesh(CubeMesh);
+	NodeObject->SetShader(ColorShader);
+	NodeObject->SetPosition(vec3f(3, 1, 3));
+	NodeObject->SetScale(0.15f);
+	NodeObject->SetUniform("uColor", CUniform<color3f>(Color::Basic::Magenta));
+	RenderPass->AddSceneObject(NodeObject);
+
+	NodeObject = new CSimpleMeshSceneObject();
+	NodeObject->SetMesh(CubeMesh);
+	NodeObject->SetShader(ColorShader);
+	NodeObject->SetPosition(vec3f(6, 1, 9));
+	NodeObject->SetScale(0.15f);
+	NodeObject->SetUniform("uColor", CUniform<color3f>(Color::Basic::Magenta));
+	RenderPass->AddSceneObject(NodeObject);
+
+	LineObject->AddLine(vec3f(0, 1, 0), vec3f(3, 1, 0), Color::Hex(0xCC11FF));
+	LineObject->AddLine(vec3f(3, 1, 0), vec3f(3, 1, 3), Color::Hex(0xCC11FF));
+	LineObject->AddLine(vec3f(3, 1, 3), vec3f(6, 1, 9), Color::Hex(0xCC11FF));
 }
 
 void CApplication::MainLoop()

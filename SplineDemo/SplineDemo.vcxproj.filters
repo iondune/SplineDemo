@@ -3,8 +3,10 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="CApplication.cpp" />
+    <ClCompile Include="CLineSceneObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CApplication.h" />
+    <ClInclude Include="CLineSceneObject.h" />
   </ItemGroup>
 </Project>

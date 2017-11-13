@@ -2,6 +2,7 @@
 #pragma once
 
 #include <ionEngine.h>
+#include "CLineSceneObject.h"
 
 
 class CApplication : public ion::Singleton<CApplication>, public ion::CDefaultApplication
@@ -25,9 +26,11 @@ public:
 
 	ion::SharedPointer<ion::Graphics::IShader> ColorShader;
 	ion::SharedPointer<ion::Graphics::IShader> TextureShader;
+	ion::SharedPointer<ion::Graphics::IShader> LineShader;
 
 	ion::Scene::CSimpleMesh * CubeMesh = nullptr;
 	ion::Scene::CSimpleMesh * SphereMesh = nullptr;
+	ion::CLineSceneObject * LineObject = nullptr;
 	
 	ion::SharedPointer<ion::Graphics::ITexture> GroundTexture;
 
