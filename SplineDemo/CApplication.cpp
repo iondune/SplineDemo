@@ -32,19 +32,43 @@ void CApplication::OnEvent(IEvent & Event)
 				RenderPass->SetActiveCamera(FreeCamera);
 				break;
 
+			case EKey::R:
+				Spline.SetDefaultInterpolator(Linear);
+				Spline.BuildDistanceTable();
+				break;
+
 			case EKey::T:
-				Interpolator->Mode = ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>::Uniform;
+				CatmullRom->Mode = ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>::Uniform;
+				Spline.SetDefaultInterpolator(CatmullRom);
 				Spline.BuildDistanceTable();
 				break;
 
 			case EKey::Y:
-				Interpolator->Mode = ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>::Chordal;
+				CatmullRom->Mode = ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>::Chordal;
+				Spline.SetDefaultInterpolator(CatmullRom);
 				Spline.BuildDistanceTable();
 				break;
 
 			case EKey::U:
-				Interpolator->Mode = ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>::Centripetal;
+				CatmullRom->Mode = ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>::Centripetal;
+				Spline.SetDefaultInterpolator(CatmullRom);
 				Spline.BuildDistanceTable();
+				break;
+
+			case EKey::B:
+				CurrentNode = 0;
+				break;
+
+			case EKey::N:
+				CurrentNode = 1;
+				break;
+
+			case EKey::M:
+				CurrentNode = 2;
+				break;
+
+			case EKey::Comma:
+				CurrentNode = 3;
 				break;
 
 			case EKey::RightBracket:
@@ -167,8 +191,9 @@ void CApplication::AddSceneObjects()
 	PointLight->SetPosition(vec3f(3, 6, 3));
 	RenderPass->AddLight(PointLight);
 
-	Interpolator = std::make_shared<ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>>();
-	Spline.SetDefaultInterpolator(Interpolator);
+	CatmullRom = std::make_shared<ion::Animation::CCatmullRomAdvancedSplineInterpolator<vec3f>>();
+	Linear = std::make_shared<ion::Animation::CLinearSplineInterpolator<vec3f>>();
+	Spline.SetDefaultInterpolator(Linear);
 	Spline.SetLooping(false);
 
 	Spline.AddNode(vec3f(0, 1, 0));
@@ -183,8 +208,9 @@ void CApplication::MainLoop()
 	while (WindowManager->Run())
 	{
 		TimeManager->Update();
+		float const Elapsed = (float) TimeManager->GetElapsedTime();
 
-		Timer += TimeDirection * (float) TimeManager->GetElapsedTime();
+		Timer += TimeDirection * Elapsed;
 		
 		float const EndPath = (float) (Spline.GetNodes().size() - 1);
 		if (Timer > EndPath)
@@ -197,6 +223,28 @@ void CApplication::MainLoop()
 			Timer = 0.f;
 			TimeDirection = 1.f;
 		}
+
+		float const NodeMoveSpeed = 0.8f * Elapsed;
+		vec3f const Forward = Normalize(FreeCamera->GetLookDirecton() * vec3f(1, 0, 1));
+		vec3f const Right = Cross(Forward, FreeCamera->GetUpVector());
+		vec3f NodeMovement;
+		if (Window->IsKeyDown(EKey::I))
+		{
+			NodeMovement += Forward * NodeMoveSpeed;
+		}
+		if (Window->IsKeyDown(EKey::J))
+		{
+			NodeMovement -= Right * NodeMoveSpeed;
+		}
+		if (Window->IsKeyDown(EKey::K))
+		{
+			NodeMovement -= Forward * NodeMoveSpeed;
+		}
+		if (Window->IsKeyDown(EKey::L))
+		{
+			NodeMovement += Right * NodeMoveSpeed;
+		}
+		Spline.GetNodes()[CurrentNode] += NodeMovement;
 
 		// GUI
 		GUIManager->NewFrame();
@@ -216,10 +264,11 @@ void CApplication::MainLoop()
 				NodeObjects[i]->SetMesh(CubeMesh);
 				NodeObjects[i]->SetShader(ColorShader);
 				NodeObjects[i]->SetScale(0.15f);
-				NodeObjects[i]->SetUniform("uColor", CUniform<color3f>(Color::Basic::Magenta));
 				RenderPass->AddSceneObject(NodeObjects[i]);
 			}
 
+			NodeObjects[i]->SetUniform("uColor", CUniform<color3f>(
+				i == CurrentNode ? Color::Hex(0x5CBADB) : Color::Hex(0xBC5CDB)));
 			NodeObjects[i]->SetPosition(Node);
 
 			if (i + 1 < Spline.GetNodes().size())

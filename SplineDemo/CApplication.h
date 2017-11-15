@@ -38,11 +38,13 @@ public:
 	ion::Scene::CSimpleMeshSceneObject * SphereObject = nullptr;
 
 	ion::Animation::CSpline<ion::vec3f> Spline;
-	ion::SharedPointer<ion::Animation::CCatmullRomAdvancedSplineInterpolator<ion::vec3f>> Interpolator;
+	ion::SharedPointer<ion::Animation::CCatmullRomAdvancedSplineInterpolator<ion::vec3f>> CatmullRom;
+	ion::SharedPointer<ion::Animation::CLinearSplineInterpolator<ion::vec3f>> Linear;
 	std::vector<ion::Scene::CSimpleMeshSceneObject *> NodeObjects;
 
 	float Timer = 0.f;
 	float TimeDirection = 1.f;
+	int CurrentNode = 0;
 
 protected:
 
